@@ -10,6 +10,6 @@
 module.exports = {
   env: {
     HOST_URL: 'https://game24.azurewebsites.net',
-    WS_HOST_URL: 'ws://game24.azurewebsites.net'
+    WS_HOST_URL: 'wss://game24.azurewebsites.net'
   }
 };
