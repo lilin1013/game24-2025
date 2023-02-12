@@ -11,15 +11,15 @@ export const useGetUsers= (props :Props) => {
     const hostUrl = process.env.HOST_URL;
     let { gameCode } = props;
     const [users, setUsers] = useState<Array<User>>([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingUser, setLoadingUser] = useState(true);
 
     const getUsers = async (code?: string) => {
         if(code) gameCode = code;
         if(gameCode){
-            setLoading(true);
+            setLoadingUser(true);
         try {
             const response = await axios.get(`${hostUrl}/api/game/${gameCode}/users`);
-            setLoading(false);
+            setLoadingUser(false);
             setUsers(response.data);
         } catch (error) {
             console.error(error);
@@ -32,7 +32,7 @@ export const useGetUsers= (props :Props) => {
       getUsers();
     }, []);
     
-    return { users, getUsers, loading };
+    return { users, getUsers, loadingUser };
 }
 
 

@@ -45,7 +45,7 @@ const Avatar: React.FC<Props> = ({ user, showPoints, isHighlight }) => {
         <div className='text-white text-bold text-m'>{user.Name[0].toUpperCase()}</div>
       </div>
       <div className={`${textcolor} text-l`}>{`${user.Name} ${text}`}</div>
-      {showPoints && <div className={`${textcolor} text-bold text-xl`}> - {user.Points.toString()} points</div>}
+      {showPoints && <div className={`${textcolor} text-bold text-l`}>  {`[${user.Points.toString()} points]`} </div>}
 
     </div>
 

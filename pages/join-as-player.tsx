@@ -38,7 +38,7 @@ export default function JoinAsPlayer() {
               name,
             });
 
-            localStorage.setItem('userId', response.data.UserId);
+            localStorage.setItem('userId', response.data.Id);
       
             router.push(`../${code}/waiting`);
           } catch (error) {
