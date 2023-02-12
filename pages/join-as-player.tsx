@@ -1,10 +1,10 @@
 import styles from '@/styles/Home.module.css'
-import Button from './components/button'
-import TextBox from './components/textBox';
+import Button from '../src/components/button'
+import TextBox from '../src/components/textBox';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import PageHeader from './components/pageHeader';
+import PageHeader from '../src/components/pageHeader';
 
 export default function JoinAsPlayer() {
   const hostUrl = process.env.HOST_URL;

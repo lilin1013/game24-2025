@@ -1,8 +1,8 @@
 import styles from '@/styles/Home.module.css'
-import Button from './components/button'
-import Card from './components/card'
+import Button from '../src/components/button'
+import Card from '../src/components/card'
 import { useRouter } from 'next/router'
-import PageHeader from './components/pageHeader';
+import PageHeader from '../src/components/pageHeader';
 
 
 export default function Home() {

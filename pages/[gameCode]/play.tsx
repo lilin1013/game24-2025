@@ -1,12 +1,12 @@
 import styles from '@/styles/Home.module.css'
-import Button from '../components/button'
+import Button from '../../src/components/button'
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import Avatar, { User } from '../components/avatar';
+import Avatar, { User } from '../../src/components/avatar';
 import { useEffect } from 'react';
-import PageHeader from '../components/pageHeader';
+import PageHeader from '../../src/components/pageHeader';
 import { useWebSocket, MessageListener } from '../../src/webSocket';
-import Card from '../components/card';
+import Card from '../../src/components/card';
 import { useGetUsers } from '@/src/hooks/useGetUser';
 import { useGetRound, Round, Status } from '../../src/hooks/useGetRound';
 

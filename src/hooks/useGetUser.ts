@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { User } from '../../pages/components/avatar';
+import { User } from '../components/avatar';
 
 interface Props {
     gameCode: string

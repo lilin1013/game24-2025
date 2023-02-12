@@ -1,10 +1,10 @@
 import styles from '@/styles/Home.module.css'
-import Button from '../components/button'
+import Button from '../../src/components/button'
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import Avatar, { User } from '../components/avatar';
+import Avatar, { User } from '../../src/components/avatar';
 import { useState, useEffect } from 'react';
-import PageHeader from '../components/pageHeader';
+import PageHeader from '../../src/components/pageHeader';
 import { useWebSocket, MessageListener } from '../../src/webSocket';
 import { useGetUsers } from '@/src/hooks/useGetUser';
 
