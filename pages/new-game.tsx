@@ -8,6 +8,7 @@ import PageHeader from './components/pageHeader';
 
 
 export default function NewGame() {
+  const hostUrl = process.env.HOST_URL;
     const router = useRouter();
 
     const [name, setName] = useState<string>('');
@@ -25,7 +26,7 @@ export default function NewGame() {
 
       const goToNext = async () => {
         try {
-            const response = await axios.post('http://localhost:5065/api/game/host', {
+            const response = await axios.post(`${hostUrl}/api/game/host`, {
               name,
             });
             localStorage.setItem('userId', response.data.Id);

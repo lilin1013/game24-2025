@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 
 export type MessageListener = (message: String) => void;
 
-export const useWebSocket = () => {
-  const url = 'ws://localhost:5065/game';
+export const useWebSocket = (gameCode:String) => {
+  const url = `${process.env.WS_HOST_URL}/gamesocket/${gameCode}`;
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const listeners = useRef<Array<MessageListener>>([]);
@@ -36,11 +36,14 @@ export const useWebSocket = () => {
   
 
   const addMessageListener = (listener: MessageListener) => {
+    console.log("adding listener")
     listeners.current.push(listener);
   };
 
   const removeMessageListener = (listener: MessageListener) => {
+    console.log("removing listener")
     listeners.current = listeners.current.filter((l) => l !== listener);
+    socket?.close(1000, "close the socket");
   };
 
   const sendMessage = (message: String) => {

@@ -8,6 +8,7 @@ interface Props {
 
 
 export const useGetUsers= (props :Props) => {
+    const hostUrl = process.env.HOST_URL;
     let { gameCode } = props;
     const [users, setUsers] = useState<Array<User>>([]);
     const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ export const useGetUsers= (props :Props) => {
         if(gameCode){
             setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:5065/api/game/${gameCode}/users`);
+            const response = await axios.get(`${hostUrl}/api/game/${gameCode}/users`);
             setLoading(false);
             setUsers(response.data);
         } catch (error) {

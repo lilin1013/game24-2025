@@ -15,9 +15,6 @@ export default function Home() {
     <>
       <PageHeader />
       <main className={styles.main}>
-      
-
-
           <div className="flex justify-between mx-auto gap-10">
             <div className='bg-gray-300 p-20 flex flex-col gap-4 max-w-2xl'>
               <div className="flex gap-4  ">
@@ -31,7 +28,7 @@ export default function Home() {
 
             <div className="flex flex-col gap-4">
               <Button onClick={goToNewGame} text={'Start new game'} />
-              <Button onClick={() => { }} text={'Join a game'} />
+              <Button onClick={() => { router.push('/join-as-player') }} text={'Join a game'} />
             </div>
           </div>
        

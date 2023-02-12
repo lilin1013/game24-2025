@@ -6,36 +6,35 @@ import Avatar, { User } from '../components/avatar';
 import { useState, useEffect } from 'react';
 import PageHeader from '../components/pageHeader';
 import { useWebSocket, MessageListener } from '../../src/webSocket';
+import { useGetUsers } from '@/src/hooks/useGetUser';
 
 export default function WaitingPage() {
     const router = useRouter();
     const gameCode = router.query.gameCode;
-    const [users, setUsers] = useState<Array<User>>([]);
-    const { addMessageListener, removeMessageListener } = useWebSocket();
+    const { users, getUsers } = useGetUsers({ gameCode: gameCode as string })
+    const { addMessageListener, removeMessageListener } = useWebSocket(gameCode as string);
 
     useEffect(() => {
-        const listener: MessageListener = (message: String) => {
-            if (message === "newPlayerJoined") {
-                getUsers();
+        if (gameCode) {
+            getUsers(gameCode as string);
+            const listener: MessageListener = (message: String) => {
+                switch (message) {
+                    case "roundUpdated":
+                        router.push(`../${gameCode}/play`);
+                        break;
+                    case "userUpdated":
+                        getUsers(gameCode as string);
+                        break;
+                    default:
+                        break;
+                }
+    
+            };
+            addMessageListener(listener);
+            return () => {
+                removeMessageListener(listener);
             }
-        };
-        addMessageListener(listener);
-        return () => {
-            removeMessageListener(listener);
-        };
-    }, []);
-
-
-    const getUsers = async () => {
-        try {
-            const response = await axios.get(`http://localhost:5065/api/game/${gameCode}/users`);
-            setUsers(response.data);
-        } catch (error) {
         }
-    }
-
-    useEffect(() => {
-        if (gameCode) getUsers();
     }, [gameCode])
 
     return (
