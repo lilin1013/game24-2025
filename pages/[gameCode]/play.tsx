@@ -50,24 +50,9 @@ export default function Play() {
                     userId:localStorage.getItem("userId"),
                     round: round.Round,
                 });
-                getLatestRound(gameCode as string)
             } catch (error) {
                 console.error(error);
             }
-
-            const listener: MessageListener = (message: String) => {
-                if (message === "userUpdated") {
-                    getUsers(gameCode as string);
-                }
-                if (message === "roundUpdated") {
-                    getLatestRound(gameCode as string)
-                }
-            };
-            addMessageListener(listener);
-    
-            return () => {
-                removeMessageListener(listener);
-            };
         }
     }
 

@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export type MessageListener = (message: String) => void;
 
 export const useWebSocket = (gameCode:String) => {
-  const url = `${process.env.WS_HOST_URL}/gamesocket/${gameCode}`;
+  const uuid = uuidv4();
+  const url = `${process.env.WS_HOST_URL}/gamesocket?gameCode=${gameCode}&clientId=${uuid}`;
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const listeners = useRef<Array<MessageListener>>([]);
