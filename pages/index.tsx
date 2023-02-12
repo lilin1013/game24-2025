@@ -23,7 +23,7 @@ export default function Home() {
                 <Card value='7'></Card>
                 <Card value='8'></Card>
               </div>
-              <p className='text-xl font-bold text-green-900'>Determine a method to arrive at the value of 24 using those cards. for instance, (4*6)*(8-7) = 24.</p>
+              <p className='text-xl font-bold text-green-900'>Game 24 is a card game where the goal is to make a hand that equals 24. for instance, (4*6)*(8-7) = 24.</p>
             </div>
 
             <div className="flex flex-col gap-4">

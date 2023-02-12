@@ -29,7 +29,7 @@ const Avatar: React.FC<Props> = ({ user, showPoints, isHighlight }) => {
   let text = ''
 
   if (isHost && isCurrentPlayer) {
-    text = '(You are the host)';
+    text = '(You, host)';
   } else if (isHost) {
     text = '(Host)';
   } else if (isCurrentPlayer) {

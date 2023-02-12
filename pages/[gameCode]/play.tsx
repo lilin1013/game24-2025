@@ -77,8 +77,8 @@ export default function Play() {
         <>
             <PageHeader />
             <main className={styles.main}>
-            <div className="flex mx-auto gap-10 justify-center">
-                <div className='bg-gray-300 p-20 flex flex-col gap-10 max-w-2xl items-center h-80 w-96'>
+            <div className="flex mx-auto gap-10 justify-center w-11/12">
+                <div className='bg-gray-300 p-20 flex flex-col gap-10 max-w-2xl items-center h-96 w-9/12'>
                        {!loading && <div className='flex gap-4' >
                             <Card value={round.Card1.toString()}></Card>
                             <Card value={round.Card2.toString()}></Card>
