@@ -40,12 +40,12 @@ const Avatar: React.FC<Props> = ({ user, showPoints, isHighlight }) => {
   const textcolor = isHighlight ? 'text-red-600' : 'text-orange-600';
 
   return (
-    <div className='flex items-center p-3 gap-1'>
-      <span className={`${bgcolor} rounded-full text-center p-3 text-white text-bold w-12 h-12 text-l`}>
-        {user.Name[0]}
-      </span>
-      <div className={`${textcolor} text-bold text-xl`}>{`${user.Name} ${text}`}</div>
-      {showPoints && <div className={`${textcolor} text-bold text-xl`}>- {user.Points.toString()}</div>}
+    <div className='flex items-center p-1 gap-1'>
+      <div className={`${bgcolor} rounded-full p-3 flex justify-center items-center w-7 h-7`}>
+        <div className='text-white text-bold text-m'>{user.Name[0].toUpperCase()}</div>
+      </div>
+      <div className={`${textcolor} text-l`}>{`${user.Name} ${text}`}</div>
+      {showPoints && <div className={`${textcolor} text-bold text-xl`}> - {user.Points.toString()} points</div>}
 
     </div>
 

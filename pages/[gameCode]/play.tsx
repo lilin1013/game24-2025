@@ -104,7 +104,7 @@ export default function Play() {
                             {round.Status === Status.RaiseHand && <div className='flex flex-col gap-4'>
                                 <div className='flex justify-center items-center'>
                                     <Avatar user={users.find(u=>u.Id = round.UserId) as User}/>
-                                    <div className='text-orange-600 text-xl text-bold'>is presenting the idea</div>
+                                    <div className='text-orange-600 text-xl text-bold'>is presenting the calucation</div>
                                 </div>
                                 <div className='flex gap-4'>
                                     <Button width="w-48" onClick={()=>{onEvaluate(true)}} text="correct"></Button>
