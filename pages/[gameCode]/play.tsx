@@ -88,7 +88,8 @@ const [answer, setAnswer] = useState<string>('');
             <PageHeader />
             <main className={styles.main}>
             <div className="flex mx-auto gap-10 justify-center w-11/12">
-                <div className='bg-gray-300 p-20 flex flex-col gap-10 max-w-2xl items-center h-96 w-9/12'>
+                <div className='bg-gray-300 p-10 flex flex-col gap-10 max-w-2xl items-center h-96 w-9/12'>
+                    <p className='text-green-700'>Use the four numbers below to arrive at the answer of 24.</p>
                        {!loading && <div className='flex gap-4' >
                             <Card value={round.Card1.toString()}></Card>
                             <Card value={round.Card2.toString()}></Card>
@@ -121,7 +122,7 @@ const [answer, setAnswer] = useState<string>('');
                                 <div className='flex justify-center items-center'>
                                     <Avatar user={users.find(u=>u.Id = round.UserId) as User}/>
                                     <div className='text-orange-600 text-xl text-bold'>is inputing the calculation, please wait</div>
-                    
+
                                 </div>
                             </div>
                             }
