@@ -3,39 +3,44 @@ import { v4 as uuidv4 } from 'uuid';
 
 export type MessageListener = (message: String) => void;
 
-export const useWebSocket = (gameCode:String) => {
-  const uuid = uuidv4();
-  const url = `${process.env.WS_HOST_URL}/gamesocket?gameCode=${gameCode}&clientId=${uuid}`;
+export const useWebSocket = (gameCode: String) => {
+
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const listeners = useRef<Array<MessageListener>>([]);
 
   useEffect(() => {
-    const newSocket = new WebSocket(url);
+    if (gameCode) {
+      const uuid = uuidv4();
+      const url = `${process.env.WS_HOST_URL}/gamesocket?gameCode=${gameCode}&clientId=${uuid}`;
+      const newSocket = new WebSocket(url);
 
-    newSocket.onopen = (event) => {
-      console.log('WebSocket connected:', event);
-    };
+      newSocket.onopen = (event) => {
+        console.log('WebSocket connected:', event);
+      };
 
-    newSocket.onmessage = (event) => {
-      console.log('WebSocket message received:', event.data);
-      listeners.current.forEach((listener) => listener(event.data));
-    };
+      newSocket.onmessage = (event) => {
+        console.log('WebSocket message received:', event.data);
+        console.log('WebSocket target:', event.target);
+        listeners.current.forEach((listener) => listener(event.data));
+      };
 
-    newSocket.onerror = (event) => {
-      console.error('WebSocket error:', event);
-    };
+      newSocket.onerror = (event) => {
+        console.error('WebSocket error:', event);
+      };
 
-    setSocket(newSocket);
+      setSocket(newSocket);
 
-    return () => {
-      if (socket) {
-        socket.close();
-      }
-    };
-  }, []);
+      return () => {
+        if (socket) {
+          socket.close();
+        }
+      };
+    }
 
-  
+  }, [gameCode]);
+
+
 
   const addMessageListener = (listener: MessageListener) => {
     console.log("adding listener")

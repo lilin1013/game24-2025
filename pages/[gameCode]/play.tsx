@@ -11,6 +11,7 @@ import { useGetRound, Round, Status } from '../../src/hooks/useGetRound';
 import TextBox from '../../src/components/textBox';
 import isValidCal from '@/src/helpers/validCal';
 import PokerDeck from '../../src/components/pokerDeck';
+import { getLocalStorageTextItem } from '@/src/helpers/localStorage';
 
 export default function Play() {
     const hostUrl = process.env.HOST_URL;
@@ -81,6 +82,10 @@ export default function Play() {
         setAnswer(event.target.value);
     }
 
+    const userId = getLocalStorageTextItem('userId')
+    if(userId===null){
+        return <div>Something went wrong</div>
+    }
 
     return (
         <>
@@ -95,7 +100,7 @@ export default function Play() {
 
                         <div>
                             {round.Status === Status.Playing && <Button width="w-48" onClick={onRaisehand} text="Raise Hand"></Button>}
-                            {round.Status === Status.RaiseHand && round.UserId === localStorage.getItem('userId') && <div className='flex flex-col gap-4'>
+                            {round.Status === Status.RaiseHand && round.UserId === userId && <div className='flex flex-col gap-4'>
                                 <div className='flex justify-center items-center'>
                                     <Avatar user={users.find(u => u.Id === round.UserId) as User} />
                                     <div className='text-orange-600 text-xl text-bold'>Input your calculation</div>
@@ -107,7 +112,7 @@ export default function Play() {
                                 </div>
                             </div>
                             }
-                            {round.Status === Status.RaiseHand && round.UserId !== localStorage.getItem('userId') && <div className='flex flex-col gap-4'>
+                            {round.Status === Status.RaiseHand && round.UserId !== userId && <div className='flex flex-col gap-4'>
                                 <div className='flex justify-center items-center'>
                                     <Avatar user={users.find(u => u.Id === round.UserId) as User} />
                                     <div className='text-orange-600 text-xl text-bold'>is inputing the calculation, please wait</div>
