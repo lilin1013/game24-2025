@@ -86,6 +86,26 @@ export default function Play() {
     if(userId===null){
         return <div>Something went wrong</div>
     }
+    if (!users) {
+        return <div>Loading</div>
+    }
+
+    const currentUser = users?.find(u=>u.Id===userId)
+
+    
+    if(!currentUser){
+        return <div>You have not join this game</div>
+    }
+
+    let raiseHandUser
+    
+    if(round && round.Status === Status.RaiseHand){
+        raiseHandUser = users.find(u => u.Id === round.UserId)
+        if(!raiseHandUser){
+            return <div>Can not find someone raised hand</div>
+        }
+    }
+    
 
     return (
         <>
@@ -98,11 +118,11 @@ export default function Play() {
                         {loading && <PokerDeck />}
                         {!loading && <PokerDeck value={[round.Card1.toString(), round.Card2.toString(), round.Card3.toString(), round.Card4.toString()]}></PokerDeck>}
 
-                        <div>
+                        {users && userId &&  <div>
                             {round.Status === Status.Playing && <Button width="w-48" onClick={onRaisehand} text="Raise Hand"></Button>}
                             {round.Status === Status.RaiseHand && round.UserId === userId && <div className='flex flex-col gap-4'>
                                 <div className='flex justify-center items-center'>
-                                    <Avatar user={users.find(u => u.Id === round.UserId) as User} />
+                                    <Avatar user={raiseHandUser as User} />
                                     <div className='text-orange-600 text-xl text-bold'>Input your calculation</div>
 
                                 </div>
@@ -114,13 +134,13 @@ export default function Play() {
                             }
                             {round.Status === Status.RaiseHand && round.UserId !== userId && <div className='flex flex-col gap-4'>
                                 <div className='flex justify-center items-center'>
-                                    <Avatar user={users.find(u => u.Id === round.UserId) as User} />
+                                    <Avatar user={raiseHandUser as User} />
                                     <div className='text-orange-600 text-xl text-bold'>is inputing the calculation, please wait</div>
 
                                 </div>
                             </div>
                             }
-                        </div>
+                        </div>}
 
                     </div>
                     <div className='flex flex-col sm:w-96'>
