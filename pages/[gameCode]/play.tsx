@@ -108,7 +108,7 @@ const [answer, setAnswer] = useState<string>('');
                             {round.Status === Status.Playing && <Button width="w-48" onClick={onRaisehand} text="Raise Hand"></Button>}
                             {round.Status === Status.RaiseHand && round.UserId === localStorage.getItem('userId') && <div className='flex flex-col gap-4'>
                                 <div className='flex justify-center items-center'>
-                                    <Avatar user={users.find(u=>u.Id = round.UserId) as User}/>
+                                    <Avatar user={users.find(u=>u.Id === round.UserId) as User}/>
                                     <div className='text-orange-600 text-xl text-bold'>Input your calculation</div>
                     
                                 </div>
@@ -120,7 +120,7 @@ const [answer, setAnswer] = useState<string>('');
                             }
                              {round.Status === Status.RaiseHand && round.UserId !== localStorage.getItem('userId') && <div className='flex flex-col gap-4'>
                                 <div className='flex justify-center items-center'>
-                                    <Avatar user={users.find(u=>u.Id = round.UserId) as User}/>
+                                    <Avatar user={users.find(u=>u.Id === round.UserId) as User}/>
                                     <div className='text-orange-600 text-xl text-bold'>is inputing the calculation, please wait</div>
 
                                 </div>
