@@ -2,7 +2,7 @@ import styles from '@/styles/Home.module.css'
 import Button from '../../src/components/button'
 import { useRouter } from 'next/router';
 import Avatar from '../../src/components/avatar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PageHeader from '../../src/components/pageHeader';
 import { useWebSocket, MessageListener } from '../../src/webSocket';
 import { useGetUsers } from '@/src/hooks/useGetUser';
@@ -14,6 +14,7 @@ export default function CodePage() {
     const gameCode = router.query.gameCode;
     const { users, getUsers } = useGetUsers({ gameCode: gameCode as string })
     const { addMessageListener, removeMessageListener } = useWebSocket(gameCode as string);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (gameCode) {
@@ -57,7 +58,7 @@ export default function CodePage() {
                         {users.map((user) => <Avatar key={user.Id} user={user} />)}
 
                     </div>
-                    <Button width='w-48' onClick={()=>{startNewGame(gameCode as string)}} text="Next"></Button>
+                    <Button width='w-48' onClick={()=>{startNewGame(gameCode as string)}} text="Next" loading={loading}></Button>
                 </div>
             </main>
         </>

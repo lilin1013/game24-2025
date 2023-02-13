@@ -13,6 +13,7 @@ export default function JoinAsPlayer() {
 
     const [name, setName] = useState<string>('');
     const [code, setCode] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
 
   
@@ -33,6 +34,7 @@ export default function JoinAsPlayer() {
       };
 
       const goToNext = async () => {
+        setLoading(true);
         try {
             const response = await axios.post(`${hostUrl}/api/game/${code}/player`, {
               name,
@@ -52,7 +54,7 @@ export default function JoinAsPlayer() {
               <div className="flex flex-col justify-between mx-auto gap-4">
                   <TextBox placeholder='Enter your name' onChange={onChange}/>
                   <TextBox placeholder='Enter the gameCode' onChange={onChangeGameCode}/>
-                  <Button onClick={goToNext} text="Next"></Button>
+                  <Button onClick={goToNext} text="Next" loading={loading}></Button>
               </div>
           </main>
         </>

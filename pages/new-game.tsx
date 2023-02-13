@@ -12,6 +12,7 @@ export default function NewGame() {
     const router = useRouter();
 
     const [name, setName] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
   
     const onChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +26,7 @@ export default function NewGame() {
       };
 
       const goToNext = async () => {
+        setLoading(true);
         try {
             const response = await axios.post(`${hostUrl}/api/game/host`, {
               name,
@@ -41,7 +43,7 @@ export default function NewGame() {
           <main className={styles.main}>
               <div className="flex flex-col justify-between mx-auto gap-4">
                   <TextBox placeholder='Enter your name' onChange={onChange}/>
-                  <Button onClick={goToNext} text="Next"></Button>
+                  <Button onClick={goToNext} text="Next" loading={loading}></Button>
               </div>
           </main>
         </>
