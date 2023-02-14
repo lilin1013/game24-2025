@@ -184,10 +184,10 @@ export default function Play() {
                                    { isHost && <Button type={ButtonType.Secondary} width="w-48" onClick={onSkip} text="Skip"></Button>}
                                 </div>}
                             {round.Status === Status.RaiseHand && round.UserId === userId && <div className='flex flex-col gap-2'>
-                                <Timer initialTime={20000} onTimeout={onTimeout} /> 
+                                <Timer initialTime={20} onTimeout={onTimeout} /> 
                                 <div className='flex justify-between gap-4'>
                                     <TextBox onChange={calculationOnChange} placeholder='Enter the calculation'></TextBox>
-                                    <Button width="w-48" onClick={onEvaluate} type={isInputValid ? ButtonType.Primary:ButtonType.Disabled} text="Submit"></Button>
+                                    <Button width="w-48" onClick={onEvaluate} type={isInputValid||submitDisabled ? ButtonType.Primary:ButtonType.Disabled} text="Submit"></Button>
                                
                                 </div>
                                { !isInputValid && <p className='text-xs text-green-800'>*You can only use the 4 numbers above once with operator + -  * / and ( )</p>}
