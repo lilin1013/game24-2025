@@ -20,15 +20,15 @@ const FullscreenPopup = ({ isOpen, onClose, evaluateState, equation }: Fullscree
 
   useEffect(() => {
     if(isOpen==true){
-      if(evaluateState = EvaluateState.Correct){
+      if(evaluateState === EvaluateState.Correct){
         setShow(true)
         setTimeout(() => {
           setShow(false)
-        }, 3*1000);
+        }, 1500);
       }
 
      
-      const timer = EvaluateState.Correct ? 8*1000 : 2*1000;
+      const timer = EvaluateState.Correct===evaluateState ? 8*1000 : 2*1000;
 
       setTimeout(() => {
         onClose()

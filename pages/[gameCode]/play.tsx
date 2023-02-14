@@ -30,6 +30,7 @@ export default function Play() {
     const evaluateAnswerString = useRef<string>('')
     const evaluateState = useRef<EvaluateState>(EvaluateState.Wrong)
     const [isInputValid, setIsInputValid] = useState<boolean>(false);
+    const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
 
     const handleOpenPopup = () => {
         setShowPopup(true);
@@ -54,6 +55,7 @@ export default function Play() {
             const listener: MessageListener = (message: String) => {
                 switch (message) {
                     case "roundUpdated":
+                        
                         getLatestRound(gameCode as string);
                         break;
                     case "userUpdated":
@@ -94,7 +96,6 @@ export default function Play() {
         }
 
         evaluateState.current = EvaluateState.Timeout
-        handleOpenPopup();
     }
 
     const onRaisehand = async () => {
@@ -124,11 +125,13 @@ export default function Play() {
 
     const onEvaluate = async () => {
         if (gameCode) {
+            setSubmitDisabled(true)
             try {
                 await axios.put(`${hostUrl}/api/game/${gameCode}/evaluate`, {
                     answer:answer,
                     round: round.Round
                 });
+                setSubmitDisabled(false)
             } catch (error) {
                 console.error(error);
             }
@@ -181,18 +184,14 @@ export default function Play() {
                                    { isHost && <Button type={ButtonType.Secondary} width="w-48" onClick={onSkip} text="Skip"></Button>}
                                 </div>}
                             {round.Status === Status.RaiseHand && round.UserId === userId && <div className='flex flex-col gap-2'>
-                                <div className='flex justify-center items-center'>
-                                    <Avatar user={raiseHandUser as User} />
-                                    <div className='text-orange-600 text-xl text-bold'>Input your calculation</div>
-
-                                </div>
+                                <Timer initialTime={20000} onTimeout={onTimeout} /> 
                                 <div className='flex justify-between gap-4'>
                                     <TextBox onChange={calculationOnChange} placeholder='Enter the calculation'></TextBox>
                                     <Button width="w-48" onClick={onEvaluate} type={isInputValid ? ButtonType.Primary:ButtonType.Disabled} text="Submit"></Button>
                                
                                 </div>
-                               { !isInputValid && <p className='text-xs text-green-800'>*You can only use the 4 numbers above once, operator + -  * / and ( )</p>}
-                               <Timer initialTime={20} onTimeout={onTimeout} /> 
+                               { !isInputValid && <p className='text-xs text-green-800'>*You can only use the 4 numbers above once with operator + -  * / and ( )</p>}
+                              
                             </div>
                             }
                             {round.Status === Status.RaiseHand && round.UserId !== userId && <div className='flex flex-col gap-4'>
