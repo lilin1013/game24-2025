@@ -9,6 +9,8 @@ export const useWebSocket = (gameCode: String) => {
 
   const listeners = useRef<Array<MessageListener>>([]);
 
+  const retryCount = useRef(0);
+
   useEffect(() => {
     if (gameCode) {
       const uuid = uuidv4();
@@ -27,6 +29,7 @@ export const useWebSocket = (gameCode: String) => {
 
       newSocket.onerror = (event) => {
         console.error('WebSocket error:', event);
+        window.location.reload();
       };
 
       setSocket(newSocket);
