@@ -23,7 +23,7 @@ export default function Result() {
             <PageHeader />
             <main className='flex h-screen'>
                 <div className="flex mx-auto ">
-                    <div className='flex flex-col bg-gray-300 sm:p-20 p-4 sm:gap-10 items-center h-96 gap-4'>
+                    <div className='flex flex-col bg-gray-300 sm:p-20 p-4 sm:gap-10 items-center h-96 gap-4 rounded'>
                         <div className='text-bold text-xl text-green-600'>Congratulations <span className='text-3xl'>{users[0].Name}</span>! you are the champion!</div>
                         <div className='flex flex-col'>
                             {users.map((user) => {
