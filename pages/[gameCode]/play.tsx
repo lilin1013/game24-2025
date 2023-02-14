@@ -1,9 +1,8 @@
-import styles from '@/styles/Home.module.css'
-import Button from '../../src/components/button'
+import Button, { ButtonType } from '../../src/components/button'
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import Avatar, { User } from '../../src/components/avatar';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PageHeader from '../../src/components/pageHeader';
 import { useWebSocket, MessageListener } from '../../src/webSocket';
 import { useGetUsers } from '@/src/hooks/useGetUser';
@@ -11,7 +10,10 @@ import { useGetRound, Round, Status } from '../../src/hooks/useGetRound';
 import TextBox from '../../src/components/textBox';
 import isValidCal from '@/src/helpers/validCal';
 import PokerDeck from '../../src/components/pokerDeck';
+
+import Timer from '../../src/components/Timer';
 import { getLocalStorageTextItem } from '@/src/helpers/localStorage';
+import FullscreenPopup, {EvaluateState} from '@/src/components/fullScreenPop';
 
 export default function Play() {
     const hostUrl = process.env.HOST_URL;
@@ -20,9 +22,30 @@ export default function Play() {
     const { users, getUsers, loadingUser } = useGetUsers({ gameCode: gameCode as string })
     const { round, getLatestRound, loading } = useGetRound({ gameCode: gameCode as string })
     const { addMessageListener, removeMessageListener } = useWebSocket(gameCode as string);
+    const userId = getLocalStorageTextItem('userId')
 
     const [answer, setAnswer] = useState<string>('');
 
+    const [showPopup, setShowPopup] = useState(false);
+    const evaluateAnswerString = useRef<string>('')
+    const evaluateState = useRef<EvaluateState>(EvaluateState.Wrong)
+    const [isInputValid, setIsInputValid] = useState<boolean>(false);
+
+    const handleOpenPopup = () => {
+        setShowPopup(true);
+    };
+
+    const handleClosePopup = () => {
+        evaluateState.current = EvaluateState.Wrong
+        setShowPopup(false);
+    };
+
+    const getIsHost = () => {
+        if(!users || !userId) return false
+        return !! users.find((user: User) => user.Id === userId)
+    }
+
+    const isHost = getIsHost()
 
     useEffect(() => {
         if (gameCode) {
@@ -39,6 +62,14 @@ export default function Play() {
                     case "showResult":
                         router.push(`../${gameCode}/result`);
                     default:
+                        if(message.startsWith("evaluate:")){
+                            const msg = message.split(":")
+                            evaluateAnswerString.current = msg[2]
+                            evaluateState.current = msg[1].toLowerCase() === "true" ? EvaluateState.Correct : EvaluateState.Wrong
+                            handleOpenPopup();
+                            
+                            getLatestRound(gameCode as string);
+                        }
                         break;
                 }
 
@@ -50,11 +81,39 @@ export default function Play() {
         }
     }, [gameCode])
 
+    const onTimeout = async () => {
+        if (gameCode) {
+            try {
+                await axios.put(`${hostUrl}/api/game/${gameCode}/timeout`, {
+                    userId: userId,
+                    round: round.Round
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        evaluateState.current = EvaluateState.Timeout
+        handleOpenPopup();
+    }
+
     const onRaisehand = async () => {
         if (gameCode) {
             try {
                 await axios.put(`${hostUrl}/api/game/${gameCode}/raiseHand`, {
-                    userId: localStorage.getItem("userId"),
+                    userId: userId,
+                    round: round.Round,
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+
+    const onSkip = async () => {
+        if (gameCode) {
+            try {
+                await axios.post(`${hostUrl}/api/game/${gameCode}/round`, {
                     round: round.Round,
                 });
             } catch (error) {
@@ -64,12 +123,10 @@ export default function Play() {
     }
 
     const onEvaluate = async () => {
-        var correct = isValidCal(answer, [round.Card1, round.Card2, round.Card3, round.Card4])
-
         if (gameCode) {
             try {
                 await axios.put(`${hostUrl}/api/game/${gameCode}/evaluate`, {
-                    correct,
+                    answer:answer,
                     round: round.Round
                 });
             } catch (error) {
@@ -79,48 +136,51 @@ export default function Play() {
     }
 
     const calculationOnChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const isValid = isValidCal(event.target.value, [round.Card1, round.Card2, round.Card3, round.Card4])
+        setIsInputValid(isValid)
         setAnswer(event.target.value);
     }
 
-    const userId = getLocalStorageTextItem('userId')
-    if(userId===null){
+    if (userId === null) {
         return <div>Something went wrong</div>
     }
     if (!users) {
         return <div>Loading</div>
     }
 
-    const currentUser = users?.find(u=>u.Id===userId)
-
-    
-    if(!currentUser){
+    const currentUser = users?.find(u => u.Id === userId)
+    if (!currentUser) {
         return <div>You have not join this game</div>
     }
 
     let raiseHandUser
-    
-    if(round && round.Status === Status.RaiseHand){
+    if (round && round.Status === Status.RaiseHand) {
         raiseHandUser = users.find(u => u.Id === round.UserId)
-        if(!raiseHandUser){
+        if (!raiseHandUser) {
             return <div>Can not find someone raised hand</div>
         }
     }
-    
 
     return (
         <>
             <PageHeader />
+            <FullscreenPopup isOpen={showPopup} onClose={handleClosePopup} evaluateState={evaluateState.current} equation={evaluateAnswerString.current} />
             <main className='flex h-screen'>
+
                 <div className="flex lg:justify-between mx-auto gap-10 flex-col lg:flex-row sm:p-10 p-4">
+
                     <div className='bg-gray-300 sm:p-10 flex flex-col sm:gap-10 max-w-2xl items-center h-96 sm:w-9/12 p-4 w-12/12 gap-4'>
                         <p className='text-green-700'>Use the four numbers below to arrive at the answer of 24.</p>
 
-                        {loading && <PokerDeck />}
-                        {!loading && <PokerDeck value={[round.Card1.toString(), round.Card2.toString(), round.Card3.toString(), round.Card4.toString()]}></PokerDeck>}
+                        {loading || showPopup &&<PokerDeck />}
+                        {!loading &&!showPopup&& <PokerDeck value={[round.Card1.toString(), round.Card2.toString(), round.Card3.toString(), round.Card4.toString()]}></PokerDeck>}
 
-                        {users && userId &&  <div>
-                            {round.Status === Status.Playing && <Button width="w-48" onClick={onRaisehand} text="Raise Hand"></Button>}
-                            {round.Status === Status.RaiseHand && round.UserId === userId && <div className='flex flex-col gap-4'>
+                        {users && userId && <div>
+                            {round.Status === Status.Playing && <div className="flex sm:flex-row flex-col gap-4">
+                                    <Button width="w-48" onClick={onRaisehand} text="Raise Hand"></Button>
+                                   { isHost && <Button type={ButtonType.Secondary} width="w-48" onClick={onSkip} text="Skip"></Button>}
+                                </div>}
+                            {round.Status === Status.RaiseHand && round.UserId === userId && <div className='flex flex-col gap-2'>
                                 <div className='flex justify-center items-center'>
                                     <Avatar user={raiseHandUser as User} />
                                     <div className='text-orange-600 text-xl text-bold'>Input your calculation</div>
@@ -128,8 +188,11 @@ export default function Play() {
                                 </div>
                                 <div className='flex justify-between gap-4'>
                                     <TextBox onChange={calculationOnChange} placeholder='Enter the calculation'></TextBox>
-                                    <Button width="w-48" onClick={onEvaluate} text="Submit"></Button>
+                                    <Button width="w-48" onClick={onEvaluate} type={isInputValid ? ButtonType.Primary:ButtonType.Disabled} text="Submit"></Button>
+                               
                                 </div>
+                               { !isInputValid && <p className='text-xs text-green-800'>*You can only use the 4 numbers above once, operator + -  * / and ( )</p>}
+                               <Timer initialTime={20} onTimeout={onTimeout} /> 
                             </div>
                             }
                             {round.Status === Status.RaiseHand && round.UserId !== userId && <div className='flex flex-col gap-4'>

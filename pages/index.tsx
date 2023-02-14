@@ -1,9 +1,8 @@
-import styles from '@/styles/Home.module.css'
 import Button from '../src/components/button'
-import Card from '../src/components/card'
 import { useRouter } from 'next/router'
 import PageHeader from '../src/components/pageHeader';
 import PokerDeck from '../src/components/pokerDeck';
+import Fireworks from '../src/components/fireworks';
 
 
 export default function Home() {

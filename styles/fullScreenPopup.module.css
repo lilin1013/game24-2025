@@ -1,0 +1,29 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+    transition: all 0.3s ease;
+  }
+  
+  .open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .popup {
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    padding: 20px;
+    border-radius: 5px;
+  }  

@@ -32,15 +32,16 @@
 
 
   const isValidCal = (str: string, digits: Array<number>): boolean => {
+
+    const regex = /^(?!.*\d{2})[0-9*+\-\/()]+$/g
+    if (!regex.test(str)) return false
+
     const digitStr = trimString(str);
     if (digitStr.length !== 4) {
         return false
     }
 
     if(!isValidString(digitStr, digits)) return false
-
-    if(eval(str) !== 24) return false
-
 
     return true
 
