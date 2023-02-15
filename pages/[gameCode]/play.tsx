@@ -7,13 +7,13 @@ import PageHeader from '../../src/components/pageHeader';
 import { useWebSocket, MessageListener } from '../../src/webSocket';
 import { useGetUsers } from '@/src/hooks/useGetUser';
 import { useGetRound, Round, Status } from '../../src/hooks/useGetRound';
-import TextBox from '../../src/components/textBox';
 import isValidCal from '@/src/helpers/validCal';
 import PokerDeck from '../../src/components/pokerDeck';
 
 import Timer from '../../src/components/Timer';
 import { getLocalStorageTextItem } from '@/src/helpers/localStorage';
 import FullscreenPopup, {EvaluateState} from '@/src/components/fullScreenPop';
+import Calulator from '@/src/components/calc';
 
 export default function Play() {
     const hostUrl = process.env.HOST_URL;
@@ -123,7 +123,7 @@ export default function Play() {
         }
     }
 
-    const onEvaluate = async () => {
+    const onEvaluate = async (answer:string) => {
         if (gameCode) {
             setSubmitDisabled(true)
             try {
@@ -164,6 +164,9 @@ export default function Play() {
         }
     }
 
+    const showCalc = round.Status === Status.RaiseHand && round.UserId === userId 
+    const height = showCalc ? 'h-[30rem]' : 'h-[25rem]'
+
     return (
         <>
             <PageHeader />
@@ -172,26 +175,19 @@ export default function Play() {
 
                 <div className="flex lg:justify-between mx-auto gap-10 flex-col lg:flex-row sm:p-10 p-4">
 
-                    <div className='bg-gray-300 sm:p-10 flex flex-col sm:gap-10 max-w-2xl items-center h-96 sm:w-9/12 p-4 w-12/12 gap-4'>
-                        <p className='text-green-700'>Use the four numbers below to arrive at the answer of 24.</p>
+                    <div className={'bg-gray-300 sm:p-10 flex flex-col sm:gap-10 max-w-2xl items-center sm:w-9/12 p-4 w-12/12 gap-4 '+height} >
+                       {!(round.Status === Status.RaiseHand && round.UserId === userId) && <p className='text-green-700'>Use the four numbers below to arrive at the answer of 24.</p>}
 
                         {loading || showPopup &&<PokerDeck />}
-                        {!loading &&!showPopup&& <PokerDeck value={[round.Card1.toString(), round.Card2.toString(), round.Card3.toString(), round.Card4.toString()]}></PokerDeck>}
+                        {!loading && !showPopup&& !(round.Status === Status.RaiseHand && round.UserId === userId) && <PokerDeck value={[round.Card1.toString(), round.Card2.toString(), round.Card3.toString(), round.Card4.toString()]}></PokerDeck>}
 
                         {users && userId && <div>
                             {round.Status === Status.Playing && <div className="flex sm:flex-row flex-col gap-4">
                                     <Button width="w-48" onClick={onRaisehand} text="Raise Hand"></Button>
                                    { isHost && <Button type={ButtonType.Secondary} width="w-48" onClick={onSkip} text="Skip"></Button>}
                                 </div>}
-                            {round.Status === Status.RaiseHand && round.UserId === userId && <div className='flex flex-col gap-2'>
-                                <Timer initialTime={20} onTimeout={onTimeout} /> 
-                                <div className='flex justify-between gap-4'>
-                                    <TextBox onChange={calculationOnChange} placeholder='Enter the calculation'></TextBox>
-                                    <Button width="w-48" onClick={onEvaluate} type={isInputValid||submitDisabled ? ButtonType.Primary:ButtonType.Disabled} text="Submit"></Button>
-                               
-                                </div>
-                               { !isInputValid && <p className='text-xs text-green-800'>*You can only use the 4 numbers above once with operator + -  * / and ( )</p>}
-                              
+                            {showCalc && <div className='flex flex-col gap-2'>
+                               <Calulator onSubmit={onEvaluate} onTimeout={onTimeout} Card1={round.Card1} Card2={round.Card2} Card3={round.Card3} Card4={round.Card4}></Calulator>
                             </div>
                             }
                             {round.Status === Status.RaiseHand && round.UserId !== userId && <div className='flex flex-col gap-4'>

@@ -4,6 +4,7 @@ import { useGetUsers } from '@/src/hooks/useGetUser';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react'
 import styles from '@/styles/Home.module.css';
+import Button from '@/src/components/button';
 
 export default function Result() {
     const router = useRouter();
@@ -30,6 +31,10 @@ export default function Result() {
                                 return <Avatar key={user.Id} user={user} showPoints={true} />
                             })}
                         </div>
+                        <Button text='Go back to Home' onClick={()=>{
+                            localStorage.clear()
+                            router.push('/')
+                        }}></Button>
                     </div>
                 </div>
             </main>

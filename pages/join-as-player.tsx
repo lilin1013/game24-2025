@@ -1,5 +1,5 @@
 import styles from '@/styles/Home.module.css'
-import Button from '../src/components/button'
+import Button, { ButtonType } from '../src/components/button'
 import TextBox from '../src/components/textBox';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -14,7 +14,7 @@ export default function JoinAsPlayer() {
     const [name, setName] = useState<string>('');
     const [code, setCode] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
-
+    const [isValid, setIsValid] = useState<boolean>(false);
 
   
     const onChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,14 +22,16 @@ export default function JoinAsPlayer() {
 
         let name = event.target.value;
 
+        setIsValid(name.length > 0&&code.length>0);
         setName(name);
+       
       };
 
       const onChangeGameCode = async (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
 
         let code = event.target.value;
-
+        setIsValid(name.length > 0&&code.length>0);
         setCode(code);
       };
 
@@ -54,7 +56,7 @@ export default function JoinAsPlayer() {
               <div className="flex flex-col justify-between mx-auto gap-4">
                   <TextBox placeholder='Enter your name' onChange={onChange}/>
                   <TextBox placeholder='Enter the gameCode' onChange={onChangeGameCode}/>
-                  <Button onClick={goToNext} text="Next" loading={loading}></Button>
+                  <Button onClick={goToNext} text="Next" loading={loading} type={isValid?ButtonType.Primary:ButtonType.Disabled}></Button>
               </div>
           </main>
         </>

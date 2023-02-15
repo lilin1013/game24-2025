@@ -22,6 +22,9 @@ const Timer = ({ initialTime, onTimeout }: Props) => {
     return () => clearInterval(intervalId);
   }, [time, onTimeout]);
 
-  return <div className="text-green-700">Time remaining: {time}s</div>;
+  return (
+  <div className="bg-green-800 rounded-full p-3 flex justify-center items-center w-7 h-7 p-7">
+    <div className='text-white text-bold text-m'>{time.toString()}</div>
+</div>)
 };
 export default Timer;
