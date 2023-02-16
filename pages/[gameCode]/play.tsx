@@ -11,6 +11,7 @@ import PokerDeck from '../../src/components/pokerDeck';
 import { getLocalStorageTextItem } from '@/src/helpers/localStorage';
 import FullscreenPopup, {EvaluateState} from '@/src/components/fullScreenPop';
 import Calulator from '@/src/components/calc';
+import ErrorComponent from '../../src/components/error';
 
 export default function Play() {
     const hostUrl = process.env.HOST_URL;
@@ -129,7 +130,7 @@ export default function Play() {
     }
 
     if (userId === null) {
-        return <div>Something went wrong</div>
+       return <ErrorComponent message='You have not join this game' />
     }
     if (!users) {
         return <div>Loading</div>
@@ -137,7 +138,7 @@ export default function Play() {
 
     const currentUser = users?.find(u => u.Id === userId)
     if (!currentUser) {
-        return <div>You have not join this game</div>
+        return <ErrorComponent message='You have not join this game' />
     }
 
     let raiseHandUser

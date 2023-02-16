@@ -30,11 +30,14 @@ const Timer = ({ initialTime, onTimeout, isSubmit }: Props) => {
     }
   }, [isSubmit]);
 
-  let color = time <= 5 ? "red-700" : "green-700";
+  let bolderColor = time <= 5 ? "border-red-700" : "border-green-700";
+  let textColor = time <= 5 ? "text-red-700" : "text-green-700";
+  
+
 
   return (
-  <div className={`bg-gray-100 rounded-full p-3 flex justify-center items-center w-7 h-7 p-7 border border-2 border-${color}`}>
-    <div className={`font-bold text-m text-${color}`}>{time.toString()}</div>
+   <div className={`bg-gray-100 rounded-full p-3 flex justify-center items-center w-7 h-7 p-7 border border-2 ${bolderColor}`}>
+    <div className={`font-bold text-m ${textColor}`}>{time.toString()}</div>
 </div>)
 };
 export default Timer;
