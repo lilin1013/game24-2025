@@ -21,8 +21,6 @@ export default function Play() {
     const { addMessageListener, removeMessageListener } = useWebSocket(gameCode as string);
     const userId = getLocalStorageTextItem('userId')
 
-    const [answer, setAnswer] = useState<string>('');
-
     const [showPopup, setShowPopup] = useState(false);
     const evaluateAnswerString = useRef<string>('')
     const evaluateState = useRef<EvaluateState>(EvaluateState.Wrong)
