@@ -9,8 +9,6 @@ import { useGetUsers } from '@/src/hooks/useGetUser';
 import { useGetRound, Round, Status } from '../../src/hooks/useGetRound';
 import isValidCal from '@/src/helpers/validCal';
 import PokerDeck from '../../src/components/pokerDeck';
-
-import Timer from '../../src/components/Timer';
 import { getLocalStorageTextItem } from '@/src/helpers/localStorage';
 import FullscreenPopup, {EvaluateState} from '@/src/components/fullScreenPop';
 import Calulator from '@/src/components/calc';
@@ -29,8 +27,6 @@ export default function Play() {
     const [showPopup, setShowPopup] = useState(false);
     const evaluateAnswerString = useRef<string>('')
     const evaluateState = useRef<EvaluateState>(EvaluateState.Wrong)
-    const [isInputValid, setIsInputValid] = useState<boolean>(false);
-    const [submitDisabled, setSubmitDisabled] = useState<boolean>(false);
 
     const handleOpenPopup = () => {
         setShowPopup(true);
@@ -55,7 +51,6 @@ export default function Play() {
             const listener: MessageListener = (message: String) => {
                 switch (message) {
                     case "roundUpdated":
-                        
                         getLatestRound(gameCode as string);
                         break;
                     case "userUpdated":
@@ -125,23 +120,15 @@ export default function Play() {
 
     const onEvaluate = async (answer:string) => {
         if (gameCode) {
-            setSubmitDisabled(true)
             try {
                 await axios.put(`${hostUrl}/api/game/${gameCode}/evaluate`, {
                     answer:answer,
                     round: round.Round
                 });
-                setSubmitDisabled(false)
             } catch (error) {
                 console.error(error);
             }
         }
-    }
-
-    const calculationOnChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const isValid = isValidCal(event.target.value, [round.Card1, round.Card2, round.Card3, round.Card4])
-        setIsInputValid(isValid)
-        setAnswer(event.target.value);
     }
 
     if (userId === null) {
@@ -175,7 +162,7 @@ export default function Play() {
 
                 <div className="flex lg:justify-between mx-auto gap-10 flex-col lg:flex-row sm:p-10 p-4">
 
-                    <div className={'bg-gray-300 sm:p-10 flex flex-col sm:gap-10 max-w-2xl items-center sm:w-9/12 p-4 w-12/12 gap-4 '+height} >
+                    <div className={'bg-gray-300 sm:p-10 flex flex-col sm:gap-10 max-w-2xl items-center sm:w-9/12 p-4 w-12/12 gap-4 rounded '+height} >
                        {!(round.Status === Status.RaiseHand && round.UserId === userId) && <p className='text-green-700'>Use the four numbers below to arrive at the answer of 24.</p>}
 
                         {loading || showPopup &&<PokerDeck />}

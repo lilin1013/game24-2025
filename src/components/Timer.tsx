@@ -16,6 +16,7 @@ const Timer = ({ initialTime, onTimeout }: Props) => {
 
     if (time <= 0) {
       clearInterval(intervalId);
+      setTime(20)
       onTimeout();
     }
 
@@ -23,8 +24,8 @@ const Timer = ({ initialTime, onTimeout }: Props) => {
   }, [time, onTimeout]);
 
   return (
-  <div className="bg-green-800 rounded-full p-3 flex justify-center items-center w-7 h-7 p-7">
-    <div className='text-white text-bold text-m'>{time.toString()}</div>
+  <div className="bg-gray-100 rounded-full p-3 flex justify-center items-center w-7 h-7 p-7 border border-w-2 border-green-700">
+    <div className='text-bold text-m text-green-700'>{time.toString()}</div>
 </div>)
 };
 export default Timer;
