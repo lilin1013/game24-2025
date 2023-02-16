@@ -22,8 +22,8 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col gap-4 p-10">
-              <Button onClick={goToNewGame} text={'Start new game'} />
-              <Button onClick={() => { router.push('/join-as-player') }} text={'Join a game'} />
+              <Button onClick={goToNewGame} text={'Start a new game'} />
+              <Button onClick={() => { router.push('/join-as-player') }} text={'Join a game as guest'} />
             </div>
           </div>
        
