@@ -57,7 +57,7 @@ const Calulator: React.FC<Props> = ({ onTimeout, onSubmit, Card1, Card2, Card3, 
     return (
         <div className='flex flex-col gap-4 p-4 justfy-center '>
             <div className='flex justify-center'>
-                <Timer initialTime={20} onTimeout={onTimeout} />
+                <Timer initialTime={20} onTimeout={onTimeout} isSubmit={isSubmit} />
             </div>
 
             <div className='text-end border border-green-700 p-4 rounded bg-gray-100 h-12 text-black'>{text}</div>

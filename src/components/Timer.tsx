@@ -4,9 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 type Props = {
   initialTime: number;
   onTimeout: () => void;
+  isSubmit: boolean;
 };
 
-const Timer = ({ initialTime, onTimeout }: Props) => {
+const Timer = ({ initialTime, onTimeout, isSubmit }: Props) => {
   const [time, setTime] = useState(initialTime);
   const intervalId = useRef<NodeJS.Timeout>();
 
@@ -22,6 +23,12 @@ const Timer = ({ initialTime, onTimeout }: Props) => {
 
     return () => clearInterval(intervalId.current );
   }, [time]);
+
+  useEffect(() => {
+    if (isSubmit && intervalId.current) {
+      clearInterval(intervalId.current );
+    }
+  }, [isSubmit]);
 
   let color = time <= 5 ? "red-700" : "green-700";
 
