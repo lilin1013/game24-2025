@@ -16,7 +16,7 @@ export interface User {
   Role: Role;
 }
 
-enum Role {
+export enum Role {
   Host = 0,
   Player = 1
 }

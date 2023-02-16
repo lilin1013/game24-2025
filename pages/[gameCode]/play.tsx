@@ -1,13 +1,12 @@
 import Button, { ButtonType } from '../../src/components/button'
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import Avatar, { User } from '../../src/components/avatar';
+import Avatar, { User, Role } from '../../src/components/avatar';
 import { useEffect, useRef, useState } from 'react';
 import PageHeader from '../../src/components/pageHeader';
 import { useWebSocket, MessageListener } from '../../src/webSocket';
 import { useGetUsers } from '@/src/hooks/useGetUser';
-import { useGetRound, Round, Status } from '../../src/hooks/useGetRound';
-import isValidCal from '@/src/helpers/validCal';
+import { useGetRound, Status } from '../../src/hooks/useGetRound';
 import PokerDeck from '../../src/components/pokerDeck';
 import { getLocalStorageTextItem } from '@/src/helpers/localStorage';
 import FullscreenPopup, {EvaluateState} from '@/src/components/fullScreenPop';
@@ -17,7 +16,7 @@ export default function Play() {
     const hostUrl = process.env.HOST_URL;
     const router = useRouter();
     const gameCode = router.query.gameCode;
-    const { users, getUsers, loadingUser } = useGetUsers({ gameCode: gameCode as string })
+    const { users, getUsers } = useGetUsers({ gameCode: gameCode as string })
     const { round, getLatestRound, loading } = useGetRound({ gameCode: gameCode as string })
     const { addMessageListener, removeMessageListener } = useWebSocket(gameCode as string);
     const userId = getLocalStorageTextItem('userId')
@@ -39,7 +38,7 @@ export default function Play() {
 
     const getIsHost = () => {
         if(!users || !userId) return false
-        return !! users.find((user: User) => user.Id === userId)
+        return !! users.find((user: User) => user.Id === userId && user.Role === Role.Host)
     }
 
     const isHost = getIsHost()

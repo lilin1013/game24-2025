@@ -60,7 +60,7 @@ const Calulator: React.FC<Props> = ({ onTimeout, onSubmit, Card1, Card2, Card3, 
                 <Timer initialTime={20} onTimeout={onTimeout} />
             </div>
 
-            <div className='text-end border border-green-700 p-4 rounded bg-gray-100 h-12'>{text}</div>
+            <div className='text-end border border-green-700 p-4 rounded bg-gray-100 h-12 text-black'>{text}</div>
             <div className="grid grid-cols-4 gap-4 justify-end">
                 {arr.map((item) =>
                     <CalBtn key={uuidv4()} value={item.value} text={item.text} onClick={onCalBtnClick}></CalBtn>
