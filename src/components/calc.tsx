@@ -16,6 +16,7 @@ const Calulator: React.FC<Props> = ({ onTimeout, onSubmit, Card1, Card2, Card3, 
 
     const [isValid, setIsValid] = useState<boolean>(false)
     const [text, setText] = useState<string>('')
+    const [isSubmit, setIsSubmit] = useState<boolean>(false)
     const arr = [
         { value: Card1, text: Card1.toString() },
         { value: Card2, text: Card2.toString() },
@@ -48,6 +49,11 @@ const Calulator: React.FC<Props> = ({ onTimeout, onSubmit, Card1, Card2, Card3, 
         setIsValid(isValid)
         setText(newText)
     }
+
+    const onSubmitCal = (text: string) => {
+        setIsSubmit(true)
+        onSubmit(text)
+    }
     return (
         <div className='flex flex-col gap-4 p-4 justfy-center '>
             <div className='flex justify-center'>
@@ -60,7 +66,7 @@ const Calulator: React.FC<Props> = ({ onTimeout, onSubmit, Card1, Card2, Card3, 
                     <CalBtn key={uuidv4()} value={item.value} text={item.text} onClick={onCalBtnClick}></CalBtn>
                 )}
             </div>
-            <Button onClick={() => { onSubmit(text) }} text={'Submit'} type={isValid?ButtonType.Primary:ButtonType.Disabled}></Button>
+           <Button onClick={() => { onSubmitCal(text) }} text={'Submit'} type={isValid&&!isSubmit?ButtonType.Primary:ButtonType.Disabled}></Button>
         </div>
     )
 }
