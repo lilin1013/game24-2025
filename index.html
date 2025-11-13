@@ -75,8 +75,9 @@
           <input
             type="text"
             id="player-name-input"
-            placeholder="Enter your name (optional)"
+            placeholder="Enter your name"
             maxlength="20"
+            required
           />
         </div>
         <p>Share this game room code with another player:</p>
@@ -102,11 +103,10 @@
       <div class="message" id="message"></div>
 
       <div class="game-over" id="game-over" style="display: none">
-        <h2>🎉 Game Over! 🎉</h2>
-        <div id="winner-announcement"></div>
-        <div class="final-scores">
-          <p>Player 1: <span id="final-score1">0</span> points</p>
-          <p>Player 2: <span id="final-score2">0</span> points</p>
+        <h2>🏆 Game Over! 🏆</h2>
+        <div id="winner-announcement" class="winner-announcement"></div>
+        <div class="final-rankings" id="final-rankings">
+          <!-- Rankings will be dynamically added here -->
         </div>
       </div>
 

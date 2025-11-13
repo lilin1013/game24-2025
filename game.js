@@ -69,8 +69,6 @@ const elements = {
   message: document.getElementById("message"),
   gameOver: document.getElementById("game-over"),
   winnerAnnouncement: document.getElementById("winner-announcement"),
-  finalScore1: document.getElementById("final-score1"),
-  finalScore2: document.getElementById("final-score2"),
   roomCode: document.getElementById("room-code"),
   copyCodeBtn: document.getElementById("copy-code-btn"),
   joinCode: document.getElementById("join-code"),
@@ -190,14 +188,19 @@ function init() {
 
 // Generate a unique room code
 function generateRoomCode() {
+  // Validate name input
+  const playerName = elements.playerNameInput.value.trim();
+  if (!playerName) {
+    alert("Please enter your name before starting the game!");
+    elements.playerNameInput.focus();
+    return;
+  }
+
   const code = Math.random().toString(36).substring(2, 8).toUpperCase();
   gameState.roomCode = code;
   elements.roomCode.value = code;
   gameState.isHost = true;
   gameState.playerNumber = 1;
-
-  // Get player name from input
-  const playerName = elements.playerNameInput.value.trim() || "Player 1";
 
   // Initialize Player 1 with name
   initializePlayer(1, playerName);
@@ -397,6 +400,14 @@ function initializePeerConnection() {
 
 // Join a room
 function joinRoom() {
+  // Validate name input
+  const playerName = elements.playerNameInput.value.trim();
+  if (!playerName) {
+    alert("Please enter your name before joining the game!");
+    elements.playerNameInput.focus();
+    return;
+  }
+
   const code = elements.joinCode.value.trim().toUpperCase();
   if (!code) {
     alert("Please enter a room code");
@@ -440,8 +451,7 @@ function joinRoom() {
 
           gameState.playerNumber = nextPlayerNum;
           
-          // Get player name from input
-          const playerName = elements.playerNameInput.value.trim() || `Player ${nextPlayerNum}`;
+          // Use the validated player name
           elements.myPlayerLabel.textContent = `${playerName} (You)`;
 
           // Initialize this player with connected status and name
@@ -1188,6 +1198,7 @@ function endGame() {
   const playerNumbers = Object.keys(gameState.players).map(Number);
   const scores = playerNumbers.map((num) => ({
     player: num,
+    name: gameState.players[num].name || `Player ${num}`,
     score: getPlayerScore(num),
   }));
 
@@ -1195,22 +1206,42 @@ function endGame() {
   const maxScore = scores[0]?.score || 0;
   const winners = scores.filter((s) => s.score === maxScore);
 
-  let winnerText = "";
+  // Create congratulations message
+  let congratsMessage = "";
   if (winners.length === 1) {
-    winnerText = `🏆 Player ${winners[0].player} Wins! 🏆`;
+    congratsMessage = `🏆 Congratulations ${winners[0].name}! 🏆<br><span class="winner-subtitle">You are the champion with ${maxScore} points!</span>`;
   } else if (winners.length > 1) {
-    const winnerList = winners.map((w) => `Player ${w.player}`).join(", ");
-    winnerText = `🤝 Tie between ${winnerList}! 🤝`;
+    const winnerNames = winners.map((w) => w.name).join(" & ");
+    congratsMessage = `🤝 It's a tie! 🤝<br><span class="winner-subtitle">${winnerNames} tied with ${maxScore} points!</span>`;
   }
 
-  // Display scores in game over screen
-  const scoresList = scores
-    .map((s) => `Player ${s.player}: ${s.score} points`)
-    .join(" | ");
+  elements.winnerAnnouncement.innerHTML = congratsMessage;
 
-  elements.winnerAnnouncement.textContent = winnerText;
-  elements.finalScore1.textContent = scoresList;
-  elements.finalScore2.textContent = "";
+  // Display rankings
+  const rankingsContainer = document.getElementById("final-rankings");
+  if (rankingsContainer) {
+    rankingsContainer.innerHTML = "";
+    
+    scores.forEach((player, index) => {
+      const rankBox = document.createElement("div");
+      rankBox.className = "rank-item";
+      if (index === 0) rankBox.classList.add("first-place");
+      if (index === 1) rankBox.classList.add("second-place");
+      if (index === 2) rankBox.classList.add("third-place");
+      
+      const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `#${index + 1}`;
+      
+      rankBox.innerHTML = `
+        <div class="rank-position">${medal}</div>
+        <div class="rank-details">
+          <div class="rank-name">${player.name}</div>
+          <div class="rank-score">${player.score} points</div>
+        </div>
+      `;
+      
+      rankingsContainer.appendChild(rankBox);
+    });
+  }
 
   elements.gameOver.style.display = "block";
   elements.nextRoundBtn.style.display = "none";

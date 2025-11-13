@@ -514,19 +514,98 @@ h1 {
   background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
   border-radius: 15px;
   margin: 30px 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .game-over h2 {
   font-size: 3em;
   color: #667eea;
   margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#winner-announcement {
-  font-size: 2em;
+.winner-announcement {
+  font-size: 2.2em;
   font-weight: bold;
-  color: #f5576c;
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, #f5576c 0%, #ff9a44 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+.winner-subtitle {
+  font-size: 0.6em;
+  display: block;
+  margin-top: 10px;
+  color: #764ba2;
+  -webkit-text-fill-color: #764ba2;
+}
+
+.final-rankings {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.rank-item:hover {
+  transform: translateX(5px);
+}
+
+.rank-item.first-place {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  border: 3px solid #daa520;
+  transform: scale(1.05);
+}
+
+.rank-item.second-place {
+  background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+  border: 3px solid #a8a8a8;
+}
+
+.rank-item.third-place {
+  background: linear-gradient(135deg, #cd7f32 0%, #e4a672 100%);
+  border: 3px solid #b87333;
+}
+
+.rank-position {
+  font-size: 2.5em;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: center;
+}
+
+.rank-details {
+  flex: 1;
+  text-align: left;
+}
+
+.rank-name {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.rank-score {
+  font-size: 1.1em;
+  color: #666;
 }
 
 .final-scores {
