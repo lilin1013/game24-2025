@@ -157,7 +157,13 @@ function getNextPlayerNumber() {
 }
 
 function init() {
-  generateRoomCode();
+  // Generate initial room code without starting the game
+  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+  gameState.roomCode = code;
+  elements.roomCode.value = code;
+  gameState.isHost = true;
+  gameState.playerNumber = 1;
+
   initializePeerConnection();
 
   elements.startBtn.addEventListener("click", startGame);
@@ -186,21 +192,15 @@ function init() {
   });
 }
 
-// Generate a unique room code
+// Generate a unique room code and initialize player
 function generateRoomCode() {
   // Validate name input
   const playerName = elements.playerNameInput.value.trim();
   if (!playerName) {
     alert("Please enter your name before starting the game!");
     elements.playerNameInput.focus();
-    return;
+    return false;
   }
-
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  gameState.roomCode = code;
-  elements.roomCode.value = code;
-  gameState.isHost = true;
-  gameState.playerNumber = 1;
 
   // Initialize Player 1 with name
   initializePlayer(1, playerName);
@@ -210,7 +210,8 @@ function generateRoomCode() {
   updateScores();
 
   // 设置 Firebase 实时监听
-  setupFirebaseListener(code);
+  setupFirebaseListener(gameState.roomCode);
+  return true;
 }
 
 // 设置 Firebase 监听
@@ -820,6 +821,14 @@ function startGame() {
     showMessage("Only Player 1 can start the game", "error");
     return;
   }
+  
+  // Initialize player with name if not already done
+  if (!gameState.players[1] || !gameState.players[1].name) {
+    if (!generateRoomCode()) {
+      return; // Name validation failed
+    }
+  }
+  
   resetGame();
   nextRound();
   elements.startBtn.style.display = "none";
