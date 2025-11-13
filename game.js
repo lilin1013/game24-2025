@@ -406,7 +406,16 @@ function joinRoom() {
           const data = snapshot.val();
           console.log("Loading Firebase game state:", data);
 
-          // Determine next available player number
+          // Load existing players first to check available slots
+          if (data.players) {
+            Object.keys(data.players).forEach((playerNum) => {
+              const num = parseInt(playerNum);
+              initializePlayer(num);
+              gameState.players[num] = data.players[num];
+            });
+          }
+
+          // Determine next available player number based on Firebase data
           const nextPlayerNum = getNextPlayerNumber();
           if (nextPlayerNum === null) {
             alert("Room is full! Maximum 6 players allowed.");
@@ -417,19 +426,9 @@ function joinRoom() {
           gameState.playerNumber = nextPlayerNum;
           elements.myPlayerLabel.textContent = `Player ${nextPlayerNum} (You)`;
 
-          // Initialize this player
+          // Initialize this player with connected status
           initializePlayer(nextPlayerNum);
-
-          // Load existing players
-          if (data.players) {
-            Object.keys(data.players).forEach((playerNum) => {
-              const num = parseInt(playerNum);
-              if (num !== nextPlayerNum) {
-                initializePlayer(num);
-                gameState.players[num] = data.players[num];
-              }
-            });
-          }
+          gameState.players[nextPlayerNum].connected = true;
 
           if (data.gameState) {
             gameState.currentRound = data.gameState.currentRound;
