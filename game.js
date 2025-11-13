@@ -546,6 +546,12 @@ function joinRoom() {
               if (gameData.gameState) {
                 applyRemoteGameState(gameData.gameState, gameData.players);
               }
+
+              // Handle specific actions
+              if (gameData.lastAction === "finish") {
+                endGame();
+              }
+
               if (
                 gameData.lastSubmit &&
                 gameData.lastSubmit.timestamp > gameState.lastSync
