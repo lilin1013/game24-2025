@@ -651,6 +651,7 @@ function syncGameState(action, data) {
       currentRound: gameState.currentRound,
       numbers: [...gameState.numbers], // Clone array
       roundActive: gameState.roundActive,
+      cardsUnveiled: gameState.cardsUnveiled,
       roundWinner: gameState.roundWinner,
     },
   };
@@ -713,6 +714,9 @@ function checkForRemoteUpdates() {
         applyRemoteGameState(data.gameState);
         elements.startBtn.style.display = "none";
         showMessage("Game started!", "success");
+      } else if (data.action === "unveil") {
+        applyRemoteGameState(data.gameState);
+        showMessage("Cards unveiled!", "success");
       } else if (data.action === "submit") {
         applyRemoteSubmit(data.data);
       } else if (data.action === "nextRound") {
