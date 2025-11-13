@@ -160,7 +160,7 @@ function init() {
   // Generate initial room code without starting the game
   const code = Math.random().toString(36).substring(2, 8).toUpperCase();
   gameState.roomCode = code;
-  
+
   // Update room code in the UI
   const roomCodeElement = document.getElementById("room-code");
   if (roomCodeElement) {
@@ -169,7 +169,7 @@ function init() {
   } else {
     console.error("Room code element not found!");
   }
-  
+
   gameState.isHost = true;
   gameState.playerNumber = 1;
 
@@ -460,7 +460,7 @@ function joinRoom() {
           }
 
           gameState.playerNumber = nextPlayerNum;
-          
+
           // Use the validated player name
           elements.myPlayerLabel.textContent = `${playerName} (You)`;
 
@@ -830,14 +830,14 @@ function startGame() {
     showMessage("Only Player 1 can start the game", "error");
     return;
   }
-  
+
   // Initialize player with name if not already done
   if (!gameState.players[1] || !gameState.players[1].name) {
     if (!generateRoomCode()) {
       return; // Name validation failed
     }
   }
-  
+
   resetGame();
   nextRound();
   elements.startBtn.style.display = "none";
@@ -1239,16 +1239,23 @@ function endGame() {
   const rankingsContainer = document.getElementById("final-rankings");
   if (rankingsContainer) {
     rankingsContainer.innerHTML = "";
-    
+
     scores.forEach((player, index) => {
       const rankBox = document.createElement("div");
       rankBox.className = "rank-item";
       if (index === 0) rankBox.classList.add("first-place");
       if (index === 1) rankBox.classList.add("second-place");
       if (index === 2) rankBox.classList.add("third-place");
-      
-      const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `#${index + 1}`;
-      
+
+      const medal =
+        index === 0
+          ? "🥇"
+          : index === 1
+          ? "🥈"
+          : index === 2
+          ? "🥉"
+          : `#${index + 1}`;
+
       rankBox.innerHTML = `
         <div class="rank-position">${medal}</div>
         <div class="rank-details">
@@ -1256,7 +1263,7 @@ function endGame() {
           <div class="rank-score">${player.score} points</div>
         </div>
       `;
-      
+
       rankingsContainer.appendChild(rankBox);
     });
   }
