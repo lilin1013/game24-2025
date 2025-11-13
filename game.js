@@ -37,6 +37,7 @@ let gameState = {
   maxPlayers: 6,
   players: {}, // Dynamic player tracking: { 1: {score: 0, connected: true}, ... }
   roundActive: false,
+  cardsUnveiled: false,
   roundWinner: null,
   startTime: null,
   timerInterval: null,
@@ -62,6 +63,7 @@ const elements = {
   scoresDisplay: document.getElementById("scores-display"),
   myStatus: document.getElementById("my-status"),
   startBtn: document.getElementById("start-btn"),
+  unveilCardsBtn: document.getElementById("unveil-cards-btn"),
   nextRoundBtn: document.getElementById("next-round-btn"),
   skipRoundBtn: document.getElementById("skip-round-btn"),
   finishGameBtn: document.getElementById("finish-game-btn"),
@@ -176,6 +178,7 @@ function init() {
   initializePeerConnection();
 
   elements.startBtn.addEventListener("click", startGame);
+  elements.unveilCardsBtn.addEventListener("click", unveilCards);
   elements.nextRoundBtn.addEventListener("click", nextRound);
   elements.skipRoundBtn.addEventListener("click", skipRound);
   elements.finishGameBtn.addEventListener("click", finishGame);
@@ -345,6 +348,7 @@ function syncGameStateFirebase(action, data) {
       currentRound: gameState.currentRound,
       numbers: [...gameState.numbers],
       roundActive: gameState.roundActive,
+      cardsUnveiled: gameState.cardsUnveiled,
       roundWinner: gameState.roundWinner,
     },
   };
@@ -780,6 +784,10 @@ function applyRemoteGameState(
   }
 
   gameState.roundActive = remoteState.roundActive;
+  gameState.cardsUnveiled =
+    remoteState.cardsUnveiled !== undefined
+      ? remoteState.cardsUnveiled
+      : gameState.cardsUnveiled;
   gameState.roundWinner = remoteState.roundWinner || null;
 
   // Update UI - only display cards if game has started
@@ -801,6 +809,7 @@ function applyRemoteGameState(
       elements.skipRoundBtn.style.display = "none";
       elements.finishGameBtn.style.display = "none";
     }
+    elements.unveilCardsBtn.style.display = "none";
     elements.nextRoundBtn.style.display = "none";
     if (!gameState.timerInterval) {
       startTimer();
@@ -809,6 +818,17 @@ function applyRemoteGameState(
     disableInputs();
     elements.skipRoundBtn.style.display = "none";
     elements.finishGameBtn.style.display = "none";
+    // Show unveil button if cards not unveiled yet
+    if (!gameState.cardsUnveiled && gameState.currentRound > 0) {
+      elements.unveilCardsBtn.style.display = gameState.isHost
+        ? "inline-block"
+        : "none";
+      if (!gameState.isHost) {
+        showMessage("Waiting for host to unveil cards...", "success");
+      }
+    } else {
+      elements.unveilCardsBtn.style.display = "none";
+    }
   }
 }
 
@@ -854,9 +874,44 @@ function startGame() {
   }
 
   resetGame();
-  nextRound();
+  gameState.currentRound = 1;
+  gameState.numbers = generateNumbers();
+  gameState.cardsUnveiled = false;
+
+  // Hide cards initially
+  hideCards();
+
   elements.startBtn.style.display = "none";
+  elements.unveilCardsBtn.style.display = gameState.isHost
+    ? "inline-block"
+    : "none";
+  elements.currentRound.textContent = gameState.currentRound;
+
+  showMessage("Waiting for host to unveil cards...", "success");
   syncGameState("start", null);
+}
+
+// Unveil cards - called by host when ready to start
+function unveilCards() {
+  if (!gameState.isHost) {
+    showMessage("Only the host can unveil cards", "error");
+    return;
+  }
+
+  gameState.cardsUnveiled = true;
+  gameState.roundActive = true;
+  displayCards();
+  enableInputs();
+  clearPlayerStatuses();
+
+  elements.unveilCardsBtn.style.display = "none";
+  elements.skipRoundBtn.style.display = "inline-block";
+  elements.finishGameBtn.style.display = "inline-block";
+  elements.message.textContent = "";
+
+  startTimer();
+  console.log("🎴 Cards unveiled!", gameState.numbers);
+  syncGameState("unveil", null);
 }
 
 // Skip current round
@@ -949,23 +1004,27 @@ function nextRound() {
   }
 
   gameState.currentRound++;
-  gameState.roundActive = true;
+  gameState.roundActive = false;
+  gameState.cardsUnveiled = false;
   gameState.roundWinner = null;
   gameState.numbers = generateNumbers();
 
-  displayCards();
+  hideCards();
   clearInputs();
   clearPlayerStatuses();
-  enableInputs();
+  disableInputs();
 
   elements.currentRound.textContent = gameState.currentRound;
   elements.nextRoundBtn.style.display = "none";
-  elements.skipRoundBtn.style.display = "inline-block";
-  elements.finishGameBtn.style.display = "inline-block";
+  elements.unveilCardsBtn.style.display = gameState.isHost
+    ? "inline-block"
+    : "none";
+  elements.skipRoundBtn.style.display = "none";
+  elements.finishGameBtn.style.display = "none";
   elements.message.textContent = "";
   elements.message.className = "message";
 
-  startTimer();
+  showMessage("Waiting for host to unveil cards...", "success");
   console.log(
     "🎮 Starting round",
     gameState.currentRound,
@@ -990,10 +1049,25 @@ function displayCards() {
   console.log("Displaying cards:", gameState.numbers);
   gameState.numbers.forEach((num, index) => {
     if (cards[index]) {
-      cards[index].textContent = num;
-      cards[index].style.background =
-        "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)";
+      if (gameState.cardsUnveiled) {
+        cards[index].textContent = num;
+        cards[index].style.background =
+          "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)";
+      } else {
+        cards[index].textContent = "?";
+        cards[index].style.background =
+          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+      }
     }
+  });
+}
+
+// Hide cards
+function hideCards() {
+  const cards = elements.cardsContainer.querySelectorAll(".card");
+  cards.forEach((card) => {
+    card.textContent = "?";
+    card.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
   });
 }
 
