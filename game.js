@@ -77,16 +77,20 @@ const elements = {
   joinBtn: document.getElementById("join-btn"),
   connectionStatus: document.getElementById("connection-status"),
   statusText: document.getElementById("status-text"),
+  playerNameInput: document.getElementById("player-name-input"),
 };
 
 // Helper functions for multi-player support
-function initializePlayer(playerNum) {
+function initializePlayer(playerNum, playerName = null) {
   if (!gameState.players[playerNum]) {
     gameState.players[playerNum] = {
       score: 0,
       connected: true,
       hasAnswered: false,
+      name: playerName || `Player ${playerNum}`,
     };
+  } else if (playerName && !gameState.players[playerNum].name) {
+    gameState.players[playerNum].name = playerName;
   }
 }
 
@@ -109,8 +113,11 @@ function renderScoreBoard() {
     if (isCurrentPlayer) playerBox.classList.add("current-player");
     if (isWinner) playerBox.classList.add("winner");
 
+    const playerName = player.name || `Player ${playerNum}`;
+    const displayName = isCurrentPlayer ? `${playerName} (You)` : playerName;
+
     playerBox.innerHTML = `
-      <h3>Player ${playerNum}${isCurrentPlayer ? " (You)" : ""}</h3>
+      <h3>${displayName}</h3>
       <div class="score-value">${player.score}</div>
       <span class="status-badge ${player.connected ? "online" : "offline"}">
         ${player.connected ? "● Online" : "○ Offline"}
@@ -189,10 +196,13 @@ function generateRoomCode() {
   gameState.isHost = true;
   gameState.playerNumber = 1;
 
-  // Initialize Player 1
-  initializePlayer(1);
+  // Get player name from input
+  const playerName = elements.playerNameInput.value.trim() || "Player 1";
 
-  elements.myPlayerLabel.textContent = "Player 1 (You)";
+  // Initialize Player 1 with name
+  initializePlayer(1, playerName);
+
+  elements.myPlayerLabel.textContent = `${playerName} (You)`;
   updateConnectionStatus("offline", "Waiting for other players...");
   updateScores();
 
@@ -261,12 +271,17 @@ function setupFirebaseListener(code) {
               initializePlayer(num);
               gameState.players[num] = data.players[num];
               if (gameState.isHost && num !== gameState.playerNumber) {
-                showMessage(`Player ${num} has joined the game!`, "success");
+                const playerName = data.players[num].name || `Player ${num}`;
+                showMessage(`${playerName} has joined the game!`, "success");
               }
-            }
-            // Update connection status
-            if (gameState.players[num]) {
-              gameState.players[num].connected = data.players[num].connected;
+            } else {
+              // Update connection status and name
+              if (gameState.players[num]) {
+                gameState.players[num].connected = data.players[num].connected;
+                if (data.players[num].name) {
+                  gameState.players[num].name = data.players[num].name;
+                }
+              }
             }
           });
           updateScores();
@@ -424,10 +439,13 @@ function joinRoom() {
           }
 
           gameState.playerNumber = nextPlayerNum;
-          elements.myPlayerLabel.textContent = `Player ${nextPlayerNum} (You)`;
+          
+          // Get player name from input
+          const playerName = elements.playerNameInput.value.trim() || `Player ${nextPlayerNum}`;
+          elements.myPlayerLabel.textContent = `${playerName} (You)`;
 
-          // Initialize this player with connected status
-          initializePlayer(nextPlayerNum);
+          // Initialize this player with connected status and name
+          initializePlayer(nextPlayerNum, playerName);
           gameState.players[nextPlayerNum].connected = true;
 
           if (data.gameState) {

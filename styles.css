@@ -337,6 +337,34 @@ h1 {
   color: #333;
 }
 
+.name-input-container {
+  margin: 15px 0 25px;
+  text-align: center;
+}
+
+#player-name-input {
+  padding: 12px 20px;
+  font-size: 1.1em;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
+  background: white;
+  color: #333;
+  text-align: center;
+  width: 80%;
+  max-width: 300px;
+  transition: all 0.3s ease;
+}
+
+#player-name-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#player-name-input::placeholder {
+  color: #999;
+}
+
 .room-code-container {
   display: flex;
   gap: 10px;
