@@ -548,7 +548,9 @@ function joinRoom() {
               }
 
               // Handle specific actions
-              if (gameData.lastAction === "finish") {
+              if (gameData.lastAction === "finish" && gameData.lastUpdate > gameState.lastSync) {
+                console.log("🏁 Received finish action from host");
+                gameState.lastSync = gameData.lastUpdate;
                 endGame();
               }
 
