@@ -183,6 +183,21 @@ function init() {
   elements.copyCodeBtn.addEventListener("click", copyRoomCode);
   elements.joinBtn.addEventListener("click", joinRoom);
 
+  // Close game over popup
+  const closeGameOverBtn = document.getElementById("close-game-over");
+  const newGamePopupBtn = document.getElementById("new-game-popup-btn");
+  if (closeGameOverBtn) {
+    closeGameOverBtn.addEventListener("click", () => {
+      elements.gameOver.style.display = "none";
+    });
+  }
+  if (newGamePopupBtn) {
+    newGamePopupBtn.addEventListener("click", () => {
+      elements.gameOver.style.display = "none";
+      resetGame();
+    });
+  }
+
   elements.mySubmit.addEventListener("click", () =>
     handleSubmit(gameState.playerNumber)
   );
@@ -923,8 +938,10 @@ function nextRound() {
     return;
   }
 
-  console.log(`Current round: ${gameState.currentRound}, Total rounds: ${gameState.totalRounds}`);
-  
+  console.log(
+    `Current round: ${gameState.currentRound}, Total rounds: ${gameState.totalRounds}`
+  );
+
   if (gameState.currentRound >= gameState.totalRounds) {
     console.log("Game completed! Showing end game screen...");
     endGame();

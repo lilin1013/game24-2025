@@ -102,11 +102,22 @@
 
       <div class="message" id="message"></div>
 
-      <div class="game-over" id="game-over" style="display: none">
-        <h2>🏆 Game Over! 🏆</h2>
-        <div id="winner-announcement" class="winner-announcement"></div>
-        <div class="final-rankings" id="final-rankings">
-          <!-- Rankings will be dynamically added here -->
+      <!-- Game Over Popup Overlay -->
+      <div class="game-over-overlay" id="game-over" style="display: none">
+        <div class="game-over-popup">
+          <button class="close-popup" id="close-game-over">×</button>
+          <h2>🏆 Game Over! 🏆</h2>
+          <div id="winner-announcement" class="winner-announcement"></div>
+          <div class="final-rankings" id="final-rankings">
+            <!-- Rankings will be dynamically added here -->
+          </div>
+          <button
+            id="new-game-popup-btn"
+            class="main-btn"
+            style="margin-top: 30px"
+          >
+            New Game
+          </button>
         </div>
       </div>
 
