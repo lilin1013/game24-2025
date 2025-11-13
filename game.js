@@ -1046,7 +1046,12 @@ function generateNumbers() {
 // Display cards
 function displayCards() {
   const cards = elements.cardsContainer.querySelectorAll(".card");
-  console.log("Displaying cards - cardsUnveiled:", gameState.cardsUnveiled, "numbers:", gameState.numbers);
+  console.log(
+    "Displaying cards - cardsUnveiled:",
+    gameState.cardsUnveiled,
+    "numbers:",
+    gameState.numbers
+  );
   gameState.numbers.forEach((num, index) => {
     if (cards[index]) {
       if (gameState.cardsUnveiled) {
