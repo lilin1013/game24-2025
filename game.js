@@ -95,7 +95,7 @@ function renderScoreBoard() {
     console.warn("scoresDisplay element not found");
     return;
   }
-  
+
   elements.scoresDisplay.innerHTML = "";
   const playerNumbers = Object.keys(gameState.players).sort((a, b) => a - b);
 
@@ -1049,7 +1049,7 @@ function applyRemoteSubmit(data) {
     elements.nextRoundBtn.style.display = "none";
     elements.skipRoundBtn.style.display = "none";
     elements.finishGameBtn.style.display = "none";
-    
+
     // Non-hosts will see the round auto-advance when host triggers nextRound
     // Show a brief message
     if (!gameState.isHost) {
@@ -1206,8 +1206,8 @@ function endGame() {
 }
 
 // Initialize the game when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
 } else {
   init();
 }
