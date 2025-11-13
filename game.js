@@ -160,7 +160,16 @@ function init() {
   // Generate initial room code without starting the game
   const code = Math.random().toString(36).substring(2, 8).toUpperCase();
   gameState.roomCode = code;
-  elements.roomCode.value = code;
+  
+  // Update room code in the UI
+  const roomCodeElement = document.getElementById("room-code");
+  if (roomCodeElement) {
+    roomCodeElement.value = code;
+    console.log("Room code set to:", code);
+  } else {
+    console.error("Room code element not found!");
+  }
+  
   gameState.isHost = true;
   gameState.playerNumber = 1;
 
