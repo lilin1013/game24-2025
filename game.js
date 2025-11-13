@@ -923,7 +923,10 @@ function nextRound() {
     return;
   }
 
+  console.log(`Current round: ${gameState.currentRound}, Total rounds: ${gameState.totalRounds}`);
+  
   if (gameState.currentRound >= gameState.totalRounds) {
+    console.log("Game completed! Showing end game screen...");
     endGame();
     return;
   }
@@ -1209,17 +1212,20 @@ function disableInputs() {
 
 // End game
 function endGame() {
+  console.log("🏁 endGame() called!");
   stopTimer();
   gameState.roundActive = false;
 
   // Find winner(s) with highest score
   const playerNumbers = Object.keys(gameState.players).map(Number);
+  console.log("Players:", playerNumbers);
   const scores = playerNumbers.map((num) => ({
     player: num,
     name: gameState.players[num].name || `Player ${num}`,
     score: getPlayerScore(num),
   }));
 
+  console.log("Scores:", scores);
   scores.sort((a, b) => b.score - a.score);
   const maxScore = scores[0]?.score || 0;
   const winners = scores.filter((s) => s.score === maxScore);
@@ -1234,9 +1240,11 @@ function endGame() {
   }
 
   elements.winnerAnnouncement.innerHTML = congratsMessage;
+  console.log("Winner announcement set:", congratsMessage);
 
   // Display rankings
   const rankingsContainer = document.getElementById("final-rankings");
+  console.log("Rankings container found:", !!rankingsContainer);
   if (rankingsContainer) {
     rankingsContainer.innerHTML = "";
 
@@ -1266,8 +1274,10 @@ function endGame() {
 
       rankingsContainer.appendChild(rankBox);
     });
+    console.log(`Added ${scores.length} rank items to rankings`);
   }
 
+  console.log("Setting game over display to block");
   elements.gameOver.style.display = "block";
   elements.nextRoundBtn.style.display = "none";
   elements.skipRoundBtn.style.display = "none";
