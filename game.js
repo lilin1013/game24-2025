@@ -877,9 +877,13 @@ function startGame() {
   gameState.currentRound = 1;
   gameState.numbers = generateNumbers();
   gameState.cardsUnveiled = false;
+  gameState.roundActive = false;
+
+  console.log("🎮 START GAME - cardsUnveiled set to:", gameState.cardsUnveiled);
 
   // Hide cards initially
   hideCards();
+  disableInputs();
 
   elements.startBtn.style.display = "none";
   elements.unveilCardsBtn.style.display = gameState.isHost
@@ -888,7 +892,16 @@ function startGame() {
   elements.currentRound.textContent = gameState.currentRound;
 
   showMessage("Waiting for host to unveil cards...", "success");
+
+  console.log(
+    "🎮 START GAME - About to sync. cardsUnveiled:",
+    gameState.cardsUnveiled
+  );
   syncGameState("start", null);
+  console.log(
+    "🎮 START GAME - After sync. cardsUnveiled:",
+    gameState.cardsUnveiled
+  );
 }
 
 // Unveil cards - called by host when ready to start
@@ -1047,7 +1060,7 @@ function generateNumbers() {
 function displayCards() {
   const cards = elements.cardsContainer.querySelectorAll(".card");
   console.log(
-    "Displaying cards - cardsUnveiled:",
+    "🎴 DISPLAY CARDS called - cardsUnveiled:",
     gameState.cardsUnveiled,
     "numbers:",
     gameState.numbers
@@ -1055,10 +1068,12 @@ function displayCards() {
   gameState.numbers.forEach((num, index) => {
     if (cards[index]) {
       if (gameState.cardsUnveiled) {
+        console.log(`  Card ${index}: Showing number ${num}`);
         cards[index].textContent = num;
         cards[index].style.background =
           "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)";
       } else {
+        console.log(`  Card ${index}: Hiding as ?`);
         cards[index].textContent = "?";
         cards[index].style.background =
           "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
@@ -1069,11 +1084,13 @@ function displayCards() {
 
 // Hide cards
 function hideCards() {
+  console.log("🎴 HIDE CARDS called");
   const cards = elements.cardsContainer.querySelectorAll(".card");
   cards.forEach((card) => {
     card.textContent = "?";
     card.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
   });
+  console.log("🎴 HIDE CARDS completed - all cards set to ?");
 }
 
 // Start timer
