@@ -1017,6 +1017,7 @@ function nextRound() {
   if (gameState.currentRound >= gameState.totalRounds) {
     console.log("Game completed! Showing end game screen...");
     endGame();
+    syncGameState("finish", null);
     return;
   }
 
