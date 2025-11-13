@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Make 24 - Math Game for Kids</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🎯 Make 24 Game! 🎯</h1>
+        <p class="subtitle">Use all 4 numbers to make 24!</p>
+      </header>
+
+      <div class="game-info">
+        <div class="round-info">
+          Round: <span id="current-round">1</span> / 10
+        </div>
+        <div class="timer" id="timer">Time: 0s</div>
+      </div>
+
+      <div class="cards-container" id="cards-container">
+        <div class="card">?</div>
+        <div class="card">?</div>
+        <div class="card">?</div>
+        <div class="card">?</div>
+      </div>
+
+      <div class="scores-display" id="scores-display">
+        <!-- Players will be dynamically added here -->
+      </div>
+
+      <div class="my-input-section">
+        <h2 id="my-player-label">Your Turn</h2>
+        <div class="input-group">
+          <input
+            type="text"
+            id="my-input"
+            placeholder="e.g., (8 + 4) * 2 or 6 * 4 + 0"
+            disabled
+          />
+          <button id="my-submit" class="submit-btn" disabled>
+            Submit Answer
+          </button>
+        </div>
+        <div class="player-status" id="my-status"></div>
+      </div>
+
+      <div class="controls">
+        <button id="start-btn" class="main-btn">Start Game</button>
+        <button id="next-round-btn" class="main-btn" style="display: none">
+          Next Round
+        </button>
+        <button id="skip-round-btn" class="secondary-btn" style="display: none">
+          Skip Round
+        </button>
+        <button
+          id="finish-game-btn"
+          class="secondary-btn"
+          style="display: none"
+        >
+          Finish Game
+        </button>
+        <button id="new-game-btn" class="main-btn" style="display: none">
+          New Game
+        </button>
+      </div>
+
+      <div class="multiplayer-info">
+        <h3>🌐 Multiplayer Mode</h3>
+        <p>Share this game room code with another player:</p>
+        <div class="room-code-container">
+          <input type="text" id="room-code" readonly value="Generating..." />
+          <button id="copy-code-btn" class="copy-btn">Copy Code</button>
+        </div>
+        <p class="or-divider">OR</p>
+        <div class="join-room">
+          <input
+            type="text"
+            id="join-code"
+            placeholder="Enter room code to join"
+          />
+          <button id="join-btn" class="join-room-btn">Join Game</button>
+        </div>
+        <div class="connection-status" id="connection-status">
+          <span class="status-indicator offline"></span>
+          <span id="status-text">Waiting for opponent...</span>
+        </div>
+      </div>
+
+      <div class="message" id="message"></div>
+
+      <div class="game-over" id="game-over" style="display: none">
+        <h2>🎉 Game Over! 🎉</h2>
+        <div id="winner-announcement"></div>
+        <div class="final-scores">
+          <p>Player 1: <span id="final-score1">0</span> points</p>
+          <p>Player 2: <span id="final-score2">0</span> points</p>
+        </div>
+      </div>
+
+      <div class="rules">
+        <h3>How to Play:</h3>
+        <ul>
+          <li>Use all 4 numbers exactly once</li>
+          <li>Use +, -, *, / and parentheses</li>
+          <li>First correct answer wins 5 points</li>
+          <li>10 rounds per game</li>
+          <li>Highest score wins!</li>
+        </ul>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
